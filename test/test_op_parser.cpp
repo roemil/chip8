@@ -6,24 +6,25 @@
 #include <tuple>
 #include "gtest/gtest.h"
 
-// TEST(opParser, clearScreen) {
-//     OpParser cut;
+TEST(opParser, clearScreen) {
+    OpParser cut;
 
-//     const ParsedOpResults expected {Op::CLEAR_SCREEN};
-//     EXPECT_EQ(cut.parseOp(0x00E0), expected);
-// }
+    const ParsedOpResults expected {Op::CLEAR_SCREEN};
+    auto result = cut.parseOp(0x00E0);
+    EXPECT_EQ(result, expected);
+}
 
-// TEST(opParser, jump) {
-//     OpParser cut;
+TEST(opParser, jump) {
+    OpParser cut;
 
-//     const ParsedOpResults expected {Op::JUMP, 0x234};
-//     EXPECT_EQ(cut.parseOp(0x1234), expected);
-// }
+    const ParsedOpResults expected {Op::JUMP, 0x234};
+    EXPECT_EQ(cut.parseOp(0x1234), expected);
+}
 
-// TEST(opParser, setRegisters) {
-//     OpParser cut;
+TEST(opParser, setRegisters) {
+    OpParser cut;
 
-//     const RegValue regVal{0x0002, 0x0034};
-//     const ParsedOpResults expected {Op::JUMP, regVal};
-//     EXPECT_EQ(cut.parseOp(0x6234), expected);
-// }
+    const RegValue regVal{0x0002, 0x0034};
+    const ParsedOpResults expected {Op::SET_REGISTER, regVal};
+    EXPECT_EQ(cut.parseOp(0x6234), expected);
+}

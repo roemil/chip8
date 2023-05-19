@@ -10,7 +10,7 @@ struct RegValue
     uint16_t reg{};
     uint16_t value{};
 
-    bool operator==(const RegValue& rh)
+    bool operator==(const RegValue& rh) const
     {
         return reg == rh.reg && value == rh.value;
     }

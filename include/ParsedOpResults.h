@@ -16,8 +16,20 @@ struct ParsedOpResults
     ParsedOpResults(const Op& op, const uint16_t address) : op{op}, address{address}, regValue{std::nullopt} {};
     ParsedOpResults(const Op& op, const RegValue& regValue) : op{op}, address{std::nullopt}, regValue{regValue} {};
 
-    constexpr inline bool operator==(const ParsedOpResults& rh)
+    constexpr inline bool operator==(const ParsedOpResults& rh) const
     {
-        return op == rh.op && address == rh.address;
+        if(op != rh.op)
+        {
+            return false;
+        }
+        if(address)
+        {
+            return address == rh.address;
+        }
+        if(regValue)
+        {
+            return *regValue == *rh.regValue;
+        }
+        return true;
     }
 };
