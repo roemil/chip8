@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.14)
 project(chip8)
-set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD 20 CMAKE_COMPILE_WARNING_AS_ERROR ON)
 include_directories(include)
 
 find_package(SDL2 REQUIRED COMPONENTS SDL2)
@@ -9,7 +9,9 @@ add_executable(
     chip8
     #src/main.cpp
     src/chip8.cpp
-    test/test_main.cpp
+    src/opparser.cpp
+    test/test_chip8.cpp
+    test/test_op_parser.cpp
 )
 
 include(FetchContent)
@@ -25,6 +27,7 @@ target_link_libraries(
     chip8
     gtest
     gtest_main
+    gmock_main
     SDL2::SDL2
 )
 

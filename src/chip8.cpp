@@ -1,5 +1,11 @@
 #include "chip8.h"
 
+#include "iopparser.h"
+#include "defs.h"
+
+#include <iostream>
+#include <stdexcept>
+#include <tuple>
 constexpr void Chip8::setFontSprite()
 {
 
@@ -47,7 +53,38 @@ constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
 
 }
 
-Chip8::Chip8()
+Chip8::Chip8(const IOpParser& opParser) : opParser_{opParser}
 {
     setFontSprite();
+}
+
+ void Chip8::clearScreen() const
+{
+    std::cout << "\nclearScreen\n";
+}
+
+void Chip8::jump(const uint16_t newAddress) 
+{
+    pc = newAddress;
+}
+
+void Chip8::setRegister(const uint16_t reg, const uint16_t value) 
+{
+    registers_[reg] = value;
+}
+
+void Chip8::parseOp(const uint16_t op)
+{
+    auto parsedOp = opParser_.parseOp(op);
+    switch (std::get<0>(parsedOp))
+    {   case Op::JUMP:
+            jump(std::get<1>(parsedOp));
+            break;
+        case Op::SET_REGISTER:
+            setRegister(std::get<1>(parsedOp), std::get<2>(parsedOp));
+            break;
+        default:
+            // nothing to do here
+            break;
+    }
 }
