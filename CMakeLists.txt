@@ -10,6 +10,8 @@ add_executable(
     #src/main.cpp
     src/chip8.cpp
     src/opparser.cpp
+    src/ParsedOpResults.cpp
+    src/RegValue.cpp
     test/test_chip8.cpp
     test/test_op_parser.cpp
 )

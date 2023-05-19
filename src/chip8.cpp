@@ -2,6 +2,8 @@
 
 #include "iopparser.h"
 #include "defs.h"
+#include "ParsedOpResults.h"
+#include "RegValue.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -76,12 +78,12 @@ void Chip8::setRegister(const uint16_t reg, const uint16_t value)
 void Chip8::parseOp(const uint16_t op)
 {
     auto parsedOp = opParser_.parseOp(op);
-    switch (std::get<0>(parsedOp))
+    switch (parsedOp.op)
     {   case Op::JUMP:
-            jump(std::get<1>(parsedOp));
+            jump(*parsedOp.address);
             break;
         case Op::SET_REGISTER:
-            setRegister(std::get<1>(parsedOp), std::get<2>(parsedOp));
+            setRegister(parsedOp.regValue->reg, parsedOp.regValue->value);
             break;
         default:
             // nothing to do here
