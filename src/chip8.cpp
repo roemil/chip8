@@ -1,6 +1,7 @@
 #include "chip8.h"
 
 #include "iopparser.h"
+#include "IDrawer.h"
 #include "defs.h"
 #include "ParsedOpResults.h"
 #include "RegValue.h"
@@ -95,6 +96,9 @@ void Chip8::parseOp(const uint16_t op)
             break;
         case Op::SET_INDEX_REGISTER:
             indexRegister_ = parsedOp.regValue->value;
+        case Op::DRAW:
+            drawer_.draw();
+            break;
         default:
             // nothing to do here
             break;

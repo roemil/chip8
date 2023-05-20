@@ -88,3 +88,14 @@ TEST_F(Chip8Test, setIndexRegister) {
 
     // Act & Assert
 }
+
+TEST_F(Chip8Test, draw) {
+    // Arrage
+    auto op = 0xD234;
+    ParsedOpResults returnVal = {Op::DRAW, 0x0};
+    EXPECT_CALL(mock, parseOp(op)).Times(1).WillOnce(::testing::Return(returnVal));
+    EXPECT_CALL(drawer, draw).Times(1);
+    chip8->parseOp(op);
+
+    // Act & Assert
+}
