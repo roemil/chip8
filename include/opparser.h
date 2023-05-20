@@ -10,5 +10,5 @@ public:
     ~OpParser() override = default;
     OpParser() = default;
 
-    [[nodiscard]]  ParsedOpResults parseOp(const uint16_t op) const override;
+    [[nodiscard]] ParsedOpResults parseOp(const uint16_t op) const override;
 };
