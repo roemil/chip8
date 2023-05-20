@@ -55,7 +55,7 @@ constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
 
 }
 
-Chip8::Chip8(const IOpParser& opParser) : opParser_{opParser}
+Chip8::Chip8(const IOpParser& opParser, const IDrawer& drawer) : opParser_{opParser}, drawer_{drawer}
 {
     setFontSprite();
 }

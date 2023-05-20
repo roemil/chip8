@@ -3,13 +3,14 @@
 #include <array>
 
 class IOpParser;
+class IDrawer;
 
 static constexpr uint16_t RAM_SIZE = 4096;
 class Chip8
 {
     using size_type = uint16_t;
     public:
-        [[nodiscard]] Chip8(const IOpParser& opParser);
+        [[nodiscard]] Chip8(const IOpParser& opParser, const IDrawer& drawer);
         ~Chip8() = default;
 
         Chip8(const Chip8&) = delete;
@@ -37,5 +38,6 @@ class Chip8
         int soundTimer_{};
 
         const IOpParser& opParser_;
+        const IDrawer& drawer_;
 
 };
