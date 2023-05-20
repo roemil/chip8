@@ -25,6 +25,7 @@ class Chip8
         void clearScreen() const;
         void jump(const size_type newAddress);
         void setRegister(const size_type reg, const size_type value);
+        void addToRegister(const uint16_t reg, const uint16_t value);
 
         std::array<size_type, RAM_SIZE> memory_{};
         std::array<size_type, RAM_SIZE> stack_{};

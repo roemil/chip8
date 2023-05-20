@@ -65,14 +65,19 @@ Chip8::Chip8(const IOpParser& opParser) : opParser_{opParser}
     std::cout << "\nclearScreen\n";
 }
 
-void Chip8::jump(const uint16_t newAddress) 
+void Chip8::jump(const uint16_t newAddress)
 {
     pc = newAddress;
 }
 
-void Chip8::setRegister(const uint16_t reg, const uint16_t value) 
+void Chip8::setRegister(const uint16_t reg, const uint16_t value)
 {
     registers_[reg] = value;
+}
+
+void Chip8::addToRegister(const uint16_t reg, const uint16_t value)
+{
+    registers_[reg] += value;
 }
 
 void Chip8::parseOp(const uint16_t op)
@@ -84,6 +89,9 @@ void Chip8::parseOp(const uint16_t op)
             break;
         case Op::SET_REGISTER:
             setRegister(parsedOp.regValue->reg, parsedOp.regValue->value);
+            break;
+        case Op::ADD_REGISTER:
+            addToRegister(parsedOp.regValue->reg, parsedOp.regValue->value);
             break;
         default:
             // nothing to do here
