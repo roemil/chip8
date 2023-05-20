@@ -22,7 +22,7 @@ ParsedOpResults OpParser::parseOp(const uint16_t op) const
         case 0x7000:
             return ParsedOpResults{Op::ADD_REGISTER, RegValue((op & 0x0F00) >> 8, op & 0x00FF)};
         case 0xA000:
-            return ParsedOpResults{Op::SET_INDEX_REGISTER, static_cast<uint16_t>(op & 0x0FFF)};
+            return ParsedOpResults{Op::SET_INDEX_REGISTER, RegValue(0x0, op & 0x0FFF)};
         case 0xD000:
             return ParsedOpResults{Op::DRAW};
         default:

@@ -93,6 +93,8 @@ void Chip8::parseOp(const uint16_t op)
         case Op::ADD_REGISTER:
             addToRegister(parsedOp.regValue->reg, parsedOp.regValue->value);
             break;
+        case Op::SET_INDEX_REGISTER:
+            indexRegister_ = parsedOp.regValue->value;
         default:
             // nothing to do here
             break;

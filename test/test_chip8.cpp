@@ -73,6 +73,19 @@ TEST(chip8, AddRegister) {
     EXPECT_CALL(mock, parseOp(op)).Times(1).WillOnce(::testing::Return(returnVal));
     chip8.parseOp(op);
     EXPECT_EQ(chip8.getRegisters()[1], expectedRegValue+1);
+}
+
+TEST(chip8, setIndexRegister) {
+    // Arrage
+    opParserMock mock{};
+    Chip8 chip8{mock};
+
+    RegValue regVal {0x0, 0x0234};
+    ParsedOpResults returnVal = {Op::SET_INDEX_REGISTER, regVal};
+    auto op = 0xA234;
+    EXPECT_CALL(mock, parseOp(op)).Times(1).WillOnce(::testing::Return(returnVal));
+    chip8.parseOp(op);
+    EXPECT_EQ(chip8.getIndexRegister(), 0x0234);
 
     // Act & Assert
 }

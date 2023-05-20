@@ -24,7 +24,7 @@ TEST(opParser, jump) {
 TEST(opParser, setRegisters) {
     OpParser cut;
 
-    const RegValue regVal{0x0002, 0x0034};
+    constexpr RegValue regVal{0x0002, 0x0034};
     const ParsedOpResults expected {Op::SET_REGISTER, regVal};
     EXPECT_EQ(cut.parseOp(0x6234), expected);
 }
@@ -33,12 +33,20 @@ TEST(opParser, addRegisters) {
     // Arrage
     OpParser cut;
 
-    const RegValue regVal{0x0002, 0x0034};
+    constexpr RegValue regVal{0x0002, 0x0034};
     const ParsedOpResults expected {Op::SET_REGISTER, regVal};
     EXPECT_EQ(cut.parseOp(0x6234), expected);
 
     // Act & Assert
-    const RegValue regVal2{0x0002, 0x0001};
+    constexpr RegValue regVal2{0x0002, 0x0001};
     const ParsedOpResults expected2 {Op::ADD_REGISTER, regVal2};
     EXPECT_EQ(cut.parseOp(0x7201), expected2);
+}
+
+TEST(opParser, setIndexRegister) {
+    OpParser cut;
+
+    constexpr RegValue regVal{0x0, 0x0234};
+    const ParsedOpResults expected {Op::SET_INDEX_REGISTER, regVal};
+    EXPECT_EQ(cut.parseOp(0xA234), expected);
 }

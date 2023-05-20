@@ -19,6 +19,7 @@ class Chip8
         void parseOp(const size_type op);
         [[nodiscard]] size_type getPc() { return pc;};
         [[nodiscard]] std::array<size_type, 16> getRegisters() const {return registers_;};
+        [[nodiscard]] size_type getIndexRegister() const {return indexRegister_;};
     
     private:
         inline constexpr void setFontSprite();
@@ -31,6 +32,7 @@ class Chip8
         std::array<size_type, RAM_SIZE> stack_{};
         size_type pc{};
         std::array<size_type, 16> registers_{};
+        size_type indexRegister_{};
         int delayTimer_{};
         int soundTimer_{};
 
