@@ -11,7 +11,7 @@ class Chip8
     using size_type = uint16_t;
     public:
         [[nodiscard]] Chip8(const IOpParser& opParser, const IDrawer& drawer);
-        ~Chip8() = default;
+        ~Chip8();
 
         Chip8(const Chip8&) = delete;
         Chip8(Chip8&&) = delete;
@@ -36,6 +36,7 @@ class Chip8
         size_type indexRegister_{};
         int delayTimer_{};
         int soundTimer_{};
+        bool vf{};
 
         const IOpParser& opParser_;
         const IDrawer& drawer_;

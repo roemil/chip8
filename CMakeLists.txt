@@ -12,6 +12,7 @@ add_executable(
     src/opparser.cpp
     src/ParsedOpResults.cpp
     src/RegValue.cpp
+    #src/sdl_test.cpp
     test/test_chip8.cpp
     test/test_op_parser.cpp
 )

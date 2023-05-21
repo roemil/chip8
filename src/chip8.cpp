@@ -5,10 +5,14 @@
 #include "defs.h"
 #include "ParsedOpResults.h"
 #include "RegValue.h"
+#include "SDL.h"
 
 #include <iostream>
 #include <stdexcept>
-#include <tuple>
+#include <memory>
+#include <string>
+#include <utility>
+
 constexpr void Chip8::setFontSprite()
 {
 
@@ -56,9 +60,42 @@ constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
 
 }
 
+namespace
+{
+    struct WindowDestroyer
+    {
+        void operator()(SDL_Window* w) const
+        {
+            SDL_DestroyWindow(w);
+        }
+    };
+}
+
+Chip8::~Chip8()
+{
+    SDL_Quit();
+}
+
 Chip8::Chip8(const IOpParser& opParser, const IDrawer& drawer) : opParser_{opParser}, drawer_{drawer}
 {
     setFontSprite();
+
+    //Initialize SDL
+    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+    {
+        throw std::runtime_error{"SDL could not initialize! SDL_Error: " + std::string{SDL_GetError()} + "\n"};
+    }
+    int SCREEN_WIDTH = 640;
+    int SCREEN_HEIGHT = 320;
+    //Create window
+    std::unique_ptr<SDL_Window, WindowDestroyer> window {SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)};
+    if(!window)
+    {
+        throw std::runtime_error{"Window could not be created! SDL_Error: " + std::string{SDL_GetError()} + "\n"};
+    }
+
+    // Screen surface is owned by window and should not be freed
+    SDL_Surface* screenSurface = SDL_GetWindowSurface(window.get());
 }
 
  void Chip8::clearScreen() const
