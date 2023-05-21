@@ -9,12 +9,12 @@
 struct ParsedOpResults
 {
     Op op = Op::INVALID;
-    std::optional<uint16_t> address;
+    std::optional<uint16_t> singleValue;
     std::optional<RegValue> regValue;
 
-    constexpr explicit ParsedOpResults(const Op& op) : op{op}, address{std::nullopt}, regValue{std::nullopt} {};
-    constexpr ParsedOpResults(const Op& op, const uint16_t address) : op{op}, address{address}, regValue{std::nullopt} {};
-    constexpr ParsedOpResults(const Op& op, const RegValue& regValue) : op{op}, address{std::nullopt}, regValue{regValue} {};
+    constexpr explicit ParsedOpResults(const Op& op) : op{op}, singleValue{std::nullopt}, regValue{std::nullopt} {};
+    constexpr ParsedOpResults(const Op& op, const uint16_t singleValue) : op{op}, singleValue{singleValue}, regValue{std::nullopt} {};
+    constexpr ParsedOpResults(const Op& op, const RegValue& regValue) : op{op}, singleValue{std::nullopt}, regValue{regValue} {};
 
     constexpr inline bool operator==(const ParsedOpResults& rh) const
     {
@@ -22,9 +22,9 @@ struct ParsedOpResults
         {
             return false;
         }
-        if(address)
+        if(singleValue)
         {
-            return address == rh.address;
+            return singleValue == rh.singleValue;
         }
         if(regValue)
         {

@@ -50,3 +50,11 @@ TEST(opParser, setIndexRegister) {
     const ParsedOpResults expected {Op::SET_INDEX_REGISTER, regVal};
     EXPECT_EQ(cut.parseOp(0xA234), expected);
 }
+
+TEST(opParser, draw) {
+    OpParser cut;
+
+    constexpr RegValue regVal{};
+    const ParsedOpResults expected {Op::DRAW, 0x0234};
+    EXPECT_EQ(cut.parseOp(0xD234), expected);
+}

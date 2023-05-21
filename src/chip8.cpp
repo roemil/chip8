@@ -36,22 +36,22 @@ constexpr void Chip8::setFontSprite()
 */
 
 constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
-                                 0x20, 0x60, 0x20, 0x20, 0x70,
-                                 0xF0, 0x10, 0xF0, 0x80, 0xF0,
-                                 0xF0, 0x10, 0xF0, 0x10, 0xF0,
-                                 0x90, 0x90, 0xF0, 0x10, 0x10,
-                                 0xF0, 0x80, 0xF0, 0x10, 0xF0,
-                                 0xF0, 0x80, 0xF0, 0x90, 0xF0,
-                                 0xF0, 0x10, 0x20, 0x40, 0x40,
-                                 0xF0, 0x90, 0xF0, 0x90, 0xF0,
-                                 0xF0, 0x90, 0xF0, 0x10, 0xF0,
-                                 0xF0, 0x90, 0xF0, 0x90, 0x90,
-                                 0xE0, 0x90, 0xE0, 0x90, 0xE0,
-                                 0xF0, 0x80, 0x80, 0x80, 0xF0,
-                                 0xE0, 0x90, 0x90, 0x90, 0xE0,
-                                 0xF0, 0x80, 0xF0, 0x80, 0xF0, // row 14
-                                 0xF0, 0x80, 0xF0, 0x80, 0x80
-                                };
+                                              0x20, 0x60, 0x20, 0x20, 0x70,
+                                              0xF0, 0x10, 0xF0, 0x80, 0xF0,
+                                              0xF0, 0x10, 0xF0, 0x10, 0xF0,
+                                              0x90, 0x90, 0xF0, 0x10, 0x10,
+                                              0xF0, 0x80, 0xF0, 0x10, 0xF0,
+                                              0xF0, 0x80, 0xF0, 0x90, 0xF0,
+                                              0xF0, 0x10, 0x20, 0x40, 0x40,
+                                              0xF0, 0x90, 0xF0, 0x90, 0xF0,
+                                              0xF0, 0x90, 0xF0, 0x10, 0xF0,
+                                              0xF0, 0x90, 0xF0, 0x90, 0x90,
+                                              0xE0, 0x90, 0xE0, 0x90, 0xE0,
+                                              0xF0, 0x80, 0x80, 0x80, 0xF0,
+                                              0xE0, 0x90, 0x90, 0x90, 0xE0,
+                                              0xF0, 0x80, 0xF0, 0x80, 0xF0,
+                                              0xF0, 0x80, 0xF0, 0x80, 0x80
+                                             };
     unsigned memLoc = 0x050;
     for(const auto& sprite : fontSprits)
     {
@@ -118,12 +118,71 @@ void Chip8::addToRegister(const uint16_t reg, const uint16_t value)
     registers_[reg] += value;
 }
 
+void Chip8::draw(const uint16_t drawInstructions)
+{
+    const uint8_t regX = (drawInstructions & 0x0F00) >> 8;
+    const uint8_t xCoord = registers_[regX] % 64;
+    const uint8_t regY = (drawInstructions & 0x00F0) >> 4;
+    const uint8_t yCoord = registers_[regY] % 32;
+    const uint8_t numPixels = drawInstructions & 0x000F;
+    vf_ = false;
+    const auto oldPixels = pixels;
+    for(uint8_t row = 0; row < numPixels; ++row)
+    {
+            const auto& spritePixel = memory_[indexRegister_];
+            for(uint8_t j = 0; j < 8; ++j)
+            {
+                auto& currentOldScreenPixel = oldPixels[j][row];
+                bool isSpritePixelOn = spritePixel & (0x80 >> j);
+                if(isSpritePixelOn && currentOldScreenPixel == 1)
+                {
+                    // turn off pixel
+                    pixels[j+xCoord][row+yCoord] = 0;
+                    vf_ = true; // is this a list?
+                }
+                else if(isSpritePixelOn && currentOldScreenPixel == 0)
+                {
+                    // turn on pixel
+                    pixels[j+xCoord][row+yCoord] = 1;
+                }
+            }
+    }
+    SDL_Rect rect;
+
+    rect.x = 0;
+    rect.y = 0;
+    int scale = 10;
+    rect.h = 64*scale;
+    rect.w = 64*scale;
+    
+    for (int i=0; i<64; i++)
+    {
+        for (int j=0; j<32; j++)
+        {
+            rect.x = i*scale;
+            rect.y = j*scale;
+            rect.w = scale;
+            rect.h = scale;
+            if (pixels[i][j] == 1)
+            {
+                SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255, 255, 255));
+            }
+            else if (pixels[i][j] == 0)
+            {
+                SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+            }
+        }
+    }
+    SDL_Flip(screen);
+    drawer_.draw();
+}
+
 void Chip8::parseOp(const uint16_t op)
 {
     auto parsedOp = opParser_.parseOp(op);
     switch (parsedOp.op)
     {   case Op::JUMP:
-            jump(*parsedOp.address);
+            jump(*parsedOp.singleValue);
             break;
         case Op::SET_REGISTER:
             setRegister(parsedOp.regValue->reg, parsedOp.regValue->value);
@@ -134,7 +193,7 @@ void Chip8::parseOp(const uint16_t op)
         case Op::SET_INDEX_REGISTER:
             indexRegister_ = parsedOp.regValue->value;
         case Op::DRAW:
-            drawer_.draw();
+            draw(*parsedOp.singleValue);
             break;
         default:
             // nothing to do here

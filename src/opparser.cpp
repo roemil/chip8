@@ -24,7 +24,7 @@ ParsedOpResults OpParser::parseOp(const uint16_t op) const
         case 0xA000:
             return ParsedOpResults{Op::SET_INDEX_REGISTER, RegValue(0x0, op & 0x0FFF)};
         case 0xD000:
-            return ParsedOpResults{Op::DRAW};
+            return ParsedOpResults{Op::DRAW, static_cast<uint16_t>(op & 0x0FFF)};
         default:
             throw std::invalid_argument{"Bad op"};
     }

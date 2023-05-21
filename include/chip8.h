@@ -8,8 +8,8 @@ class IDrawer;
 static constexpr uint16_t RAM_SIZE = 4096;
 class Chip8
 {
-    using size_type = uint16_t;
     public:
+        using size_type = uint16_t;
         [[nodiscard]] Chip8(const IOpParser& opParser, const IDrawer& drawer);
         ~Chip8();
 
@@ -28,6 +28,7 @@ class Chip8
         void jump(const size_type newAddress);
         void setRegister(const size_type reg, const size_type value);
         void addToRegister(const uint16_t reg, const uint16_t value);
+        void draw(const uint16_t drawInstructions);
 
         std::array<size_type, RAM_SIZE> memory_{};
         std::array<size_type, RAM_SIZE> stack_{};
@@ -36,9 +37,18 @@ class Chip8
         size_type indexRegister_{};
         int delayTimer_{};
         int soundTimer_{};
-        bool vf{};
+        bool vf_{};
+        std::array<std::array<uint16_t, 64>, 32> pixels{};
 
         const IOpParser& opParser_;
         const IDrawer& drawer_;
+        struct WindowDestroyer
+        {
+            void operator()(SDL_Window* w) const
+            {
+                SDL_DestroyWindow(w);
+            }
+        }
+    };
 
 };
