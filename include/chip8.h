@@ -1,6 +1,9 @@
 #pragma once
 
+#include "SDL.h"
+
 #include <array>
+#include <memory>
 
 class IOpParser;
 class IDrawer;
@@ -48,7 +51,7 @@ class Chip8
             {
                 SDL_DestroyWindow(w);
             }
-        }
-    };
-
+        };
+        std::unique_ptr<SDL_Window, WindowDestroyer> window = nullptr;
+        SDL_Surface* screenSurface = nullptr;
 };

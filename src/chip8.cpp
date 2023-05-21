@@ -88,14 +88,14 @@ Chip8::Chip8(const IOpParser& opParser, const IDrawer& drawer) : opParser_{opPar
     int SCREEN_WIDTH = 640;
     int SCREEN_HEIGHT = 320;
     //Create window
-    std::unique_ptr<SDL_Window, WindowDestroyer> window {SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN)};
+    window.reset(SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN));
     if(!window)
     {
         throw std::runtime_error{"Window could not be created! SDL_Error: " + std::string{SDL_GetError()} + "\n"};
     }
 
     // Screen surface is owned by window and should not be freed
-    SDL_Surface* screenSurface = SDL_GetWindowSurface(window.get());
+    screenSurface = SDL_GetWindowSurface(window.get());
 }
 
  void Chip8::clearScreen() const
@@ -165,15 +165,17 @@ void Chip8::draw(const uint16_t drawInstructions)
             rect.h = scale;
             if (pixels[i][j] == 1)
             {
-                SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 255, 255, 255));
+                SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 255, 255, 255));
             }
             else if (pixels[i][j] == 0)
             {
-                SDL_FillRect(screen, &rect, SDL_MapRGB(screen->format, 0, 0, 0));
+                SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0, 0, 0));
             }
         }
     }
-    SDL_Flip(screen);
+    //SDL_Flip(screenSurface);
+    //Update the surface
+    SDL_UpdateWindowSurface( window.get() );
     drawer_.draw();
 }
 
