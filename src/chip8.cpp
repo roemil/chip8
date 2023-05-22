@@ -5,7 +5,6 @@
 #include "defs.h"
 #include "ParsedOpResults.h"
 #include "RegValue.h"
-#include "SDL.h"
 
 #include <iostream>
 #include <stdexcept>
@@ -60,42 +59,9 @@ constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
 
 }
 
-namespace
-{
-    struct WindowDestroyer
-    {
-        void operator()(SDL_Window* w) const
-        {
-            SDL_DestroyWindow(w);
-        }
-    };
-}
-
-Chip8::~Chip8()
-{
-    SDL_Quit();
-}
-
 Chip8::Chip8(const IOpParser& opParser, const IDrawer& drawer) : opParser_{opParser}, drawer_{drawer}
 {
     setFontSprite();
-
-    //Initialize SDL
-    if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
-    {
-        throw std::runtime_error{"SDL could not initialize! SDL_Error: " + std::string{SDL_GetError()} + "\n"};
-    }
-    int SCREEN_WIDTH = 640;
-    int SCREEN_HEIGHT = 320;
-    //Create window
-    window.reset(SDL_CreateWindow( "SDL Tutorial", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN));
-    if(!window)
-    {
-        throw std::runtime_error{"Window could not be created! SDL_Error: " + std::string{SDL_GetError()} + "\n"};
-    }
-
-    // Screen surface is owned by window and should not be freed
-    screenSurface = SDL_GetWindowSurface(window.get());
 }
 
  void Chip8::clearScreen() const
@@ -147,35 +113,7 @@ void Chip8::draw(const uint16_t drawInstructions)
                 }
             }
     }
-    SDL_Rect rect;
 
-    rect.x = 0;
-    rect.y = 0;
-    int scale = 10;
-    rect.h = 64*scale;
-    rect.w = 64*scale;
-    
-    for (int i=0; i<64; i++)
-    {
-        for (int j=0; j<32; j++)
-        {
-            rect.x = i*scale;
-            rect.y = j*scale;
-            rect.w = scale;
-            rect.h = scale;
-            if (pixels[i][j] == 1)
-            {
-                SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 255, 255, 255));
-            }
-            else if (pixels[i][j] == 0)
-            {
-                SDL_FillRect(screenSurface, &rect, SDL_MapRGB(screenSurface->format, 0, 0, 0));
-            }
-        }
-    }
-    //SDL_Flip(screenSurface);
-    //Update the surface
-    SDL_UpdateWindowSurface( window.get() );
     drawer_.draw();
 }
 

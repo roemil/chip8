@@ -1,7 +1,5 @@
 #pragma once
 
-#include "SDL.h"
-
 #include <array>
 #include <memory>
 
@@ -14,7 +12,7 @@ class Chip8
     public:
         using size_type = uint16_t;
         [[nodiscard]] Chip8(const IOpParser& opParser, const IDrawer& drawer);
-        ~Chip8();
+        ~Chip8() = default;
 
         Chip8(const Chip8&) = delete;
         Chip8(Chip8&&) = delete;
@@ -45,13 +43,4 @@ class Chip8
 
         const IOpParser& opParser_;
         const IDrawer& drawer_;
-        struct WindowDestroyer
-        {
-            void operator()(SDL_Window* w) const
-            {
-                SDL_DestroyWindow(w);
-            }
-        };
-        std::unique_ptr<SDL_Window, WindowDestroyer> window = nullptr;
-        SDL_Surface* screenSurface = nullptr;
 };
