@@ -4,6 +4,7 @@
 
 #include "SDL.h"
 #include <memory>
+#include <array>
 
 class SdlDrawer : public IDrawer
 {
@@ -11,7 +12,7 @@ class SdlDrawer : public IDrawer
     SdlDrawer();
     ~SdlDrawer() override;
 
-    void draw() const override;
+    void draw(const std::array<std::array<uint16_t, 64>, 32>& pixels) const override;
 
     private:
         struct WindowDestroyer

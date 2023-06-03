@@ -5,9 +5,9 @@
 
 #include "defs.h"
 #include <stdexcept>
-#include <tuple>
+#include <sstream>
 
-ParsedOpResults OpParser::parseOp(const uint16_t op) const
+[[nodiscard]] constexpr ParsedOpResults OpParser::parseOp(const uint16_t op)
 {
     switch(op & 0xF000)
     {
@@ -26,6 +26,8 @@ ParsedOpResults OpParser::parseOp(const uint16_t op) const
         case 0xD000:
             return ParsedOpResults{Op::DRAW, static_cast<uint16_t>(op & 0x0FFF)};
         default:
-            throw std::invalid_argument{"Bad op"};
+            // std::stringstream ss;
+            // ss << std::hex << op;
+            throw std::invalid_argument{"Bad op: " + std::to_string(op)};
     }
 }

@@ -7,9 +7,9 @@
 #include "gtest/gtest.h"
 
 TEST(opParser, clearScreen) {
-    OpParser cut;
+    constexpr OpParser cut;
 
-    const ParsedOpResults expected {Op::CLEAR_SCREEN};
+    constexpr ParsedOpResults expected {Op::CLEAR_SCREEN};
     auto result = cut.parseOp(0x00E0);
     EXPECT_EQ(result, expected);
 }

@@ -1,6 +1,6 @@
 #include "chip8.h"
 
-#include "iopparser.h"
+#include "opparser.h"
 #include "IDrawer.h"
 #include "defs.h"
 #include "ParsedOpResults.h"
@@ -11,6 +11,7 @@
 #include <memory>
 #include <string>
 #include <utility>
+#include <variant>
 
 constexpr void Chip8::setFontSprite()
 {
@@ -52,6 +53,7 @@ constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
                                               0xF0, 0x80, 0xF0, 0x80, 0x80
                                              };
     unsigned memLoc = 0x050;
+    indexRegister_ = memLoc;
     for(const auto& sprite : fontSprits)
     {
         memory_[memLoc++] = sprite;
@@ -59,7 +61,7 @@ constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
 
 }
 
-Chip8::Chip8(const IOpParser& opParser, const IDrawer& drawer) : opParser_{opParser}, drawer_{drawer}
+Chip8::Chip8(const OpParser& opParser, const IDrawer& drawer) : opParser_{opParser}, drawer_{drawer}
 {
     setFontSprite();
 }
@@ -114,26 +116,27 @@ void Chip8::draw(const uint16_t drawInstructions)
             }
     }
 
-    drawer_.draw();
+    drawer_.draw(pixels);
 }
 
 void Chip8::parseOp(const uint16_t op)
 {
     auto parsedOp = opParser_.parseOp(op);
+    const auto parseResults = parsedOp.parseResult_;
     switch (parsedOp.op)
     {   case Op::JUMP:
-            jump(*parsedOp.singleValue);
+            jump(std::get<uint16_t>(parseResults));
             break;
         case Op::SET_REGISTER:
-            setRegister(parsedOp.regValue->reg, parsedOp.regValue->value);
+            setRegister(std::get<RegValue>(parseResults).reg, std::get<RegValue>(parseResults).value);
             break;
         case Op::ADD_REGISTER:
-            addToRegister(parsedOp.regValue->reg, parsedOp.regValue->value);
+            addToRegister(std::get<RegValue>(parseResults).reg, std::get<RegValue>(parseResults).value);
             break;
         case Op::SET_INDEX_REGISTER:
-            indexRegister_ = parsedOp.regValue->value;
+            indexRegister_ = std::get<RegValue>(parseResults).value;
         case Op::DRAW:
-            draw(*parsedOp.singleValue);
+            draw(std::get<uint16_t>(parseResults));
             break;
         default:
             // nothing to do here

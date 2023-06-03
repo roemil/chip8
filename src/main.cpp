@@ -50,7 +50,7 @@ Font sprite 050-09F
 #include <sstream>
 #include <iostream>
 #include "opparser.h"
-#include "IDrawer.h"
+#include "SdlDrawer.h"
 
 uint16_t hexToDec(const uint16_t hex)
 {
@@ -61,19 +61,11 @@ uint16_t hexToDec(const uint16_t hex)
     return decimal;
 }
 
-struct DummyDrawer : IDrawer
-{
-    void draw() const override
-    {
-        std::cout << "dummy\n";
-    }
-}; // TODO Move sdl to this a IDrawer Class
-
 int main()
 {
     OpParser opParser{};
-    DummyDrawer dummyDrawer{};
-    Chip8 chip8{opParser, dummyDrawer};
+    SdlDrawer drawer{};
+    Chip8 chip8{opParser, drawer};
     std::array<uint16_t, 68> opCodes {0x00e0,0xa22a, 0x600c, 0x6108, 0xd01f, 0x7009,0xa239, 0xd01f,
     0xa248, 0x7008, 0xd01f, 0x7004, 0xa257, 0xd01f, 0x7008, 0xa266,  
     0xd01f, 0x7008, 0xa275, 0xd01f, 0x1228, 0xff00, 0xff00, 0x3c00,  

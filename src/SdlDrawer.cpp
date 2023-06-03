@@ -30,10 +30,9 @@ SdlDrawer::~SdlDrawer()
     SDL_Quit();
 }
 
-void SdlDrawer::draw() const
+void SdlDrawer::draw(const std::array<std::array<uint16_t, 64>, 32>& pixels) const
 {
     SDL_Rect rect;
-    std::array<std::array<uint16_t, 64>, 32> pixels{};
 
     rect.x = 0;
     rect.y = 0;

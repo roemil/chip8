@@ -1,14 +1,15 @@
 #pragma once
-#include "iopparser.h"
+
+#include <cstdint>
 
 enum class Op;
 struct ParsedOpResults;
 
-class OpParser : public IOpParser
+class OpParser
 {
 public:
-    ~OpParser() override = default;
-    OpParser() = default;
+    constexpr ~OpParser() = default;
+    constexpr OpParser() = default;
 
-    [[nodiscard]] ParsedOpResults parseOp(const uint16_t op) const override;
+    [[nodiscard]] static constexpr ParsedOpResults parseOp(const uint16_t op);
 };

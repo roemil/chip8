@@ -3,7 +3,7 @@
 #include <array>
 #include <memory>
 
-class IOpParser;
+class OpParser;
 class IDrawer;
 
 static constexpr uint16_t RAM_SIZE = 4096;
@@ -11,7 +11,7 @@ class Chip8
 {
     public:
         using size_type = uint16_t;
-        [[nodiscard]] Chip8(const IOpParser& opParser, const IDrawer& drawer);
+        [[nodiscard]] Chip8(const OpParser& opParser, const IDrawer& drawer);
         ~Chip8() = default;
 
         Chip8(const Chip8&) = delete;
@@ -41,6 +41,6 @@ class Chip8
         bool vf_{};
         std::array<std::array<uint16_t, 64>, 32> pixels{};
 
-        const IOpParser& opParser_;
+        const OpParser& opParser_;
         const IDrawer& drawer_;
 };
