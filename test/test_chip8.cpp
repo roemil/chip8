@@ -1,6 +1,5 @@
 #include "chip8.h"
 
-#include "iopparser.h"
 #include "IDrawer.h"
 #include "defs.h"
 #include "ParsedOpResults.h"

@@ -9,7 +9,6 @@ add_executable(
     chip8
     #src/main.cpp
     src/chip8.cpp
-    src/opparser.cpp
     src/ParsedOpResults.cpp
     src/RegValue.cpp
     src/SdlDrawer.cpp

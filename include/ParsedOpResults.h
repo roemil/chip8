@@ -6,6 +6,7 @@
 #include <optional>
 #include <cstdint>
 #include <variant>
+#include <string>
 
 struct ParsedOpResults
 {
