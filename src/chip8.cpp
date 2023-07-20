@@ -75,12 +75,12 @@ void Chip8::clearScreen()
     }
 }
 
-void Chip8::jump(const uint16_t newAddress)
+void Chip8::jump(const size_type newAddress)
 {
     pc = newAddress;
 }
 
-void Chip8::setRegister(const uint16_t reg, const uint16_t value)
+void Chip8::setRegister(const size_type reg, const size_type value)
 {
     registers_[reg] = value;
 }
@@ -151,8 +151,8 @@ void Chip8::parseOp(const uint16_t op)
 
 constexpr uint16_t Chip8::nextInstruction() const
 {
-    uint16_t op = memory_[pc];
-    op |= (memory_[pc+1] << 8);
+    uint16_t op = memory_[pc] << 8;
+    op |= memory_[pc+1];
     return op;
 }
 

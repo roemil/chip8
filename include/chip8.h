@@ -6,12 +6,12 @@
 class OpParser;
 class IDrawer;
 
-static constexpr uint16_t RAM_SIZE = 4096;
-static constexpr uint16_t program_memory_start = 512;
+using size_type = uint16_t;
+static constexpr size_type RAM_SIZE = 4096;
+static constexpr size_type program_memory_start = static_cast<size_type>(512);
 class Chip8
 {
     public:
-        using size_type = uint16_t;
         [[nodiscard]] Chip8(const OpParser& opParser, const IDrawer& drawer);
         ~Chip8() = default;
 
@@ -19,14 +19,14 @@ class Chip8
         Chip8(Chip8&&) = delete;
         Chip8& operator=(const Chip8&) = delete;
 
-        void parseOp(const size_type op);
+        void parseOp(const uint16_t op);
         [[nodiscard]] size_type getPc() { return pc;};
         [[nodiscard]] std::array<size_type, 16> getRegisters() const {return registers_;};
         [[nodiscard]] size_type getIndexRegister() const {return indexRegister_;};
         void run();
 
         template<std::size_t Size>
-        constexpr void load_program(const std::array<uint16_t, Size>& program)
+        constexpr void load_program(const std::array<uint8_t, Size>& program)
         {
             static_assert(Size <= RAM_SIZE - program_memory_start);
             for(int i = 0; i < program.size(); ++i)
@@ -40,9 +40,9 @@ class Chip8
         void clearScreen();
         void jump(const size_type newAddress);
         void setRegister(const size_type reg, const size_type value);
-        void addToRegister(const uint16_t reg, const uint16_t value);
-        void draw(const uint16_t drawInstructions);
-        constexpr uint16_t nextInstruction() const;
+        void addToRegister(const size_type reg, const size_type value);
+        void draw(const size_type drawInstructions);
+        constexpr size_type nextInstruction() const;
 
         std::array<size_type, RAM_SIZE> memory_{};
         std::array<size_type, RAM_SIZE> stack_{};
@@ -52,7 +52,7 @@ class Chip8
         int delayTimer_{};
         int soundTimer_{};
         bool vf_{};
-        std::array<std::array<uint16_t, 64>, 32> pixels{};
+        std::array<std::array<size_type, 64>, 32> pixels{};
 
         const OpParser& opParser_;
         const IDrawer& drawer_;
