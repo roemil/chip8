@@ -12,6 +12,8 @@
 #include <string>
 #include <utility>
 #include <variant>
+#include <fstream>
+#include <vector>
 
 constexpr void Chip8::setFontSprite()
 {
@@ -154,6 +156,23 @@ constexpr uint16_t Chip8::nextInstruction() const
     uint16_t op = memory_[pc] << 8;
     op |= memory_[pc+1];
     return op;
+}
+
+void Chip8::loadRom(const std::string_view path)
+{
+    	// Open the file as a stream of binary and move the file pointer to the end
+	std::ifstream file(path, std::ios::binary | std::ios::ate);
+
+	if (file.is_open())
+	{
+		// Get size of file and allocate a buffer to hold the contents
+		std::streampos size = file.tellg();
+        std::vector<uint8_t> buffer(std::istreambuf_iterator<char>(file),
+                                  std::istreambuf_iterator<char>{});
+		file.close();
+
+        load_program(buffer);
+	}
 }
 
 void Chip8::run()
