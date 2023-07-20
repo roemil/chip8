@@ -30,6 +30,7 @@ SdlDrawer::~SdlDrawer()
     SDL_Quit();
 }
 
+// TODO template sizes?
 void SdlDrawer::draw(const std::array<std::array<uint16_t, 64>, 32>& pixels) const
 {
     SDL_Rect rect;

@@ -63,12 +63,16 @@ constexpr std::array<uint8_t, 80> fontSprits {0xF0, 0x90, 0x90, 0x90, 0xF0,
 
 Chip8::Chip8(const OpParser& opParser, const IDrawer& drawer) : opParser_{opParser}, drawer_{drawer}
 {
+    pc = program_memory_start;
     setFontSprite();
 }
 
- void Chip8::clearScreen() const
+void Chip8::clearScreen()
 {
-    std::cout << "\nclearScreen\n";
+    for(auto& pixelRow : pixels)
+    {
+        pixelRow.fill(0);
+    }
 }
 
 void Chip8::jump(const uint16_t newAddress)
@@ -135,6 +139,7 @@ void Chip8::parseOp(const uint16_t op)
             break;
         case Op::SET_INDEX_REGISTER:
             indexRegister_ = std::get<RegValue>(parseResults).value;
+            break;
         case Op::DRAW:
             draw(std::get<uint16_t>(parseResults));
             break;
@@ -142,4 +147,19 @@ void Chip8::parseOp(const uint16_t op)
             // nothing to do here
             break;
     }
+}
+
+constexpr uint16_t Chip8::nextInstruction() const
+{
+    uint16_t op = memory_[pc];
+    op |= (memory_[pc+1] << 8);
+    return op;
+}
+
+void Chip8::run()
+{
+    const auto op = nextInstruction();
+    parseOp(op);
+    pc += 2;
+    return;
 }

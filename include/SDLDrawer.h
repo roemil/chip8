@@ -12,7 +12,7 @@ class SdlDrawer : public IDrawer
     SdlDrawer();
     ~SdlDrawer() override;
 
-    void draw(const std::array<std::array<uint16_t, 64>, 32>& pixels) const override;
+    void draw(const std::array<std::array<uint16_t, 64>, 32>& pixelMatrix) const override;
 
     private:
         struct WindowDestroyer
