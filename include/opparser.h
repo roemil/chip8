@@ -4,6 +4,7 @@
 
 #include <cstdint>
 #include <string>
+#include <iostream>
 
 enum class Op;
 
@@ -13,8 +14,9 @@ public:
     constexpr ~OpParser() = default;
     constexpr OpParser() = default;
 
-    [[nodiscard]] virtual constexpr ParsedOpResults parseOp(const uint16_t op) const
+    [[nodiscard]] virtual ParsedOpResults parseOp(const uint16_t op) const
     {
+        std::cout << "Parsing op " << op << std::endl;
         switch(op & 0xF000)
         {
             case 0x0:
@@ -30,8 +32,8 @@ public:
             case 0xD000:
                 return ParsedOpResults{Op::DRAW, static_cast<uint16_t>(op & 0x0FFF)};
             default:
-                // std::stringstream ss;
-                // ss << std::hex << op;
+                //std::stringstream ss;
+                //ss << std::hex << op;
                 throw std::invalid_argument{"Bad op: " + std::to_string(op)};
         }
     }

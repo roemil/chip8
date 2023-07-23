@@ -7,14 +7,14 @@ find_package(SDL2 REQUIRED COMPONENTS SDL2)
 
 add_executable(
     chip8
-    #src/main.cpp
+    src/main.cpp
     src/chip8.cpp
     src/ParsedOpResults.cpp
     src/RegValue.cpp
     src/SdlDrawer.cpp
     #src/sdl_test.cpp
-    test/test_chip8.cpp
-    test/test_op_parser.cpp
+    #test/test_chip8.cpp
+    #test/test_op_parser.cpp
 )
 
 include(FetchContent)
@@ -28,11 +28,11 @@ FetchContent_MakeAvailable(googletest)
 
 target_link_libraries(
     chip8
-    gtest
-    gtest_main
-    gmock_main
+   # gtest
+  #  gtest_main
+ #   gmock_main
     SDL2::SDL2
 )
 
-include(GoogleTest)
-gtest_discover_tests(chip8)
+#include(GoogleTest)
+#gtest_discover_tests(chip8)

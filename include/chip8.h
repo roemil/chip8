@@ -4,6 +4,7 @@
 #include <memory>
 #include <vector>
 #include <string>
+#include <iostream>
 
 class OpParser;
 class IDrawer;
@@ -26,12 +27,13 @@ class Chip8
         [[nodiscard]] std::array<size_type, 16> getRegisters() const {return registers_;};
         [[nodiscard]] size_type getIndexRegister() const {return indexRegister_;};
         void run();
-
+        void loadRom(const std::string_view path);
         void load_program(const std::vector<uint8_t>& program)
         {
             assert(program.size() <= RAM_SIZE - program_memory_start);
             for(int i = 0; i < program.size(); ++i)
             {
+                //std::cout << "program[i] " << program[i] << std::endl;
                 memory_[program_memory_start + i] = program[i];
             }
         }
@@ -43,7 +45,6 @@ class Chip8
         void setRegister(const size_type reg, const size_type value);
         void addToRegister(const size_type reg, const size_type value);
         void draw(const size_type drawInstructions);
-        void loadRom(const std::string_view path);
         constexpr size_type nextInstruction() const;
 
         std::array<size_type, RAM_SIZE> memory_{};

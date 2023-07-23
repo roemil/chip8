@@ -121,7 +121,6 @@ void Chip8::draw(const uint16_t drawInstructions)
                 }
             }
     }
-
     drawer_.draw(pixels);
 }
 
@@ -167,18 +166,33 @@ void Chip8::loadRom(const std::string_view path)
 	{
 		// Get size of file and allocate a buffer to hold the contents
 		std::streampos size = file.tellg();
-        std::vector<uint8_t> buffer(std::istreambuf_iterator<char>(file),
-                                  std::istreambuf_iterator<char>{});
+		std::unique_ptr<char[]> buffer = std::make_unique<char[]>(size);
+
+		// Go back to the beginning of the file and fill the buffer
+		file.seekg(0, std::ios::beg);
+		file.read(buffer.get(), size);
 		file.close();
 
-        load_program(buffer);
+        // TODO: Fill vector from file. Didn't work for some reason...
+        std::vector<uint8_t> bufferVector{};
+        bufferVector.reserve(size);
+        for (long i = 0; i < size; ++i)
+		{
+            bufferVector.push_back(buffer[i]);
+		}
+
+        load_program(bufferVector);
+
+		file.close();
 	}
 }
 
 void Chip8::run()
 {
-    const auto op = nextInstruction();
-    parseOp(op);
-    pc += 2;
-    return;
+    while(true)
+    {
+        const auto op = nextInstruction();
+        parseOp(op);
+        pc += 2;
+    }
 }
